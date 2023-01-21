@@ -31,21 +31,17 @@ namespace Exercise_Tracker
         public MainWindow()
         {
             InitializeComponent();
-            LoadActivities();
+            SortActivities();
         }
 
         #region Loading
-        public void LoadActivities()
+        public void SortActivities()
         {
-            allActivities.Clear();
-            allActivities = new Activities();
             // sort by date
-            Comparison<Activity> compareDate = new Comparison<Activity>(Activity.CompareDate);
-            allActivities.Sort(compareDate);
-            
-            lvActivities.ItemsSource = allActivities.Reverse<Activity>();
+            List<Activity> sorted = allActivities.OrderByDescending(x => x.ActivityDate).ToList();
+            lvActivities.ItemsSource = sorted;
 
-            SummaryStats();
+            //SummaryStats();
         }
         #endregion
         #region ButtonClicks
@@ -155,12 +151,13 @@ namespace Exercise_Tracker
         {
             if (dpStartDate.SelectedDate != null && dpEndDate.SelectedDate != null)
             {
+                //TODO - change storedproc method to filter method
                 allActivities = new Activities(startDate, endDate);
                 // sort by date
                 Comparison<Activity> compareDate = new Comparison<Activity>(Activity.CompareDate);
-                allActivities.Sort(compareDate);
+                allActivities.OrderByDescending(x => x.ActivityDate);
 
-                lvActivities.ItemsSource = allActivities.Reverse<Activity>();
+                lvActivities.ItemsSource = allActivities;
                 SummaryStats();
             }
             else
@@ -181,7 +178,8 @@ namespace Exercise_Tracker
 
         private void btnRefreshList_Click(object sender, RoutedEventArgs e)
         {
-            LoadActivities();
+            SortActivities();
+            
         }
 
         private void cboActivityType_DropDownClosed(object sender, EventArgs e)

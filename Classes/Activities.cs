@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using System.Collections.ObjectModel;
 
 namespace Exercise_Tracker.Classes
 {
-    public sealed class Activities: List<Activity>
+    public sealed class Activities: ObservableCollection<Activity>
     {
         #region Constructors
         public Activities()

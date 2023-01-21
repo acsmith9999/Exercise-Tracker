@@ -5,18 +5,79 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
-
+using System.ComponentModel;
 
 namespace Exercise_Tracker.Classes
 {
-    public sealed class Activity 
+    public sealed class Activity :INotifyPropertyChanged
     {
+        private int _activityId;
+        private string _activityType;
+        private DateTime _activityDate;
+        private string _duration;
+        private decimal _distance;
         #region Public Properties
-        public int ActivityId { get; set; }
-        public string ActivityType { get; set; }
-        public DateTime ActivityDate { get; set; }
-        public String Duration { get; set; }
-        public decimal Distance { get; set; }
+        public int ActivityId
+        {
+            get { return _activityId; } 
+            set
+            {
+                if (this._activityId != value)
+                {
+                    this._activityId = value;
+                    this.NotifyPropertyChanged("Id");
+                }
+            }
+        }
+        public string ActivityType
+        {
+            get { return this._activityType; }
+            set
+            {
+                if (this._activityType != value)
+                {
+                    this._activityType = value;
+                    this.NotifyPropertyChanged("Type");
+                }
+            }
+        }
+        public DateTime ActivityDate
+        {
+            get { return this._activityDate; }
+            set
+            {
+                if (this._activityDate != value)
+                {
+                    this._activityDate = value;
+                    this.NotifyPropertyChanged("Date");
+                }
+            }
+        }
+        public String Duration
+        {
+            get { return this._duration; }
+            set
+            {
+                if (this._duration != value)
+                {
+                    this._duration = value;
+                    this.NotifyPropertyChanged("Duration");
+                }
+            }
+        }
+        public decimal Distance
+        {
+            get { return this._distance; }
+            set
+            {
+                if (this._distance != value)
+                {
+                    this._distance = value;
+                    this.NotifyPropertyChanged("Distance");
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
         #endregion
 
         #region Constructors
@@ -117,6 +178,13 @@ namespace Exercise_Tracker.Classes
         public static int CompareDate(Activity a1, Activity a2)
         {
             return a1.ActivityDate.CompareTo(a2.ActivityDate);
+        }
+        public void NotifyPropertyChanged(string propName)
+        {
+            if(this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
         #endregion
 

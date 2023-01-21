@@ -65,7 +65,7 @@ namespace Exercise_Tracker
                         MessageBox.Show("Update success!");
                         Close();
                         feed.IsEnabled = true;
-                        feed.LoadActivities();
+                        feed.SortActivities();
                     }
                 }
             }
@@ -168,7 +168,7 @@ namespace Exercise_Tracker
                         MessageBox.Show("Activities's details successfully deleted!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         Close();
                         feed.IsEnabled = true;
-                        feed.LoadActivities();
+                        feed.SortActivities();
                     }
                 }
                 catch (Exception ex)

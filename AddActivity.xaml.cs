@@ -47,7 +47,7 @@ namespace Exercise_Tracker
                     MessageBox.Show("New activity added");
                     Close();
                     feed.IsEnabled = true;
-                    feed.LoadActivities();
+                    feed.SortActivities();
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace Exercise_Tracker
             {
                 Close();
                 feed.IsEnabled = true;
-                feed.LoadActivities();
+                feed.SortActivities();
             }
         }
         private bool ValidateInputControls()

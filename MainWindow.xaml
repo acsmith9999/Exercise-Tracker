@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Feed" Height="450" Width="400">
     <Grid>
-        <ListView x:Name="lvActivities" Height="164" VerticalAlignment="Top" SelectionChanged="lvActivities_SelectionChanged" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" Margin="0,0,0,0">
+        <ListView x:Name="lvActivities" Height="164" VerticalAlignment="Top" SelectionChanged="lvActivities_SelectionChanged" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" Margin="0,0,0,0" ItemsSource="{Binding Path=Activities}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Path=ActivityDate}" Width="Auto"/>
