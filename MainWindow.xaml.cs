@@ -23,20 +23,21 @@ namespace Exercise_Tracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Activities allActivities = new Activities();
+        public Activities allActivities;
         public Activity selectedActivity;
         private DateTime startDate;
         private DateTime endDate;
+        public SummaryStats summaryStats = new SummaryStats();
 
         private CollectionViewSource cvs = new CollectionViewSource();
 
-
         public MainWindow()
         {
+            allActivities = new Activities();
             InitializeComponent();
             SortActivities();
 
-            //SummaryStats();
+            SummaryStats();
         }
 
         #region Loading
@@ -51,6 +52,7 @@ namespace Exercise_Tracker
             b.Source = cvs;
             BindingOperations.SetBinding(lvActivities, ListView.ItemsSourceProperty, b);
             //lvActivities.ItemsSource = (System.Collections.IEnumerable)cvs.Source;
+            //SummaryStats();
         }
         #endregion
         #region ButtonClicks
@@ -179,14 +181,17 @@ namespace Exercise_Tracker
             {
                 case "cboFilterType":
                     cvs.Filter += FilterType;
+                    SummaryStats();
                     break;
                 case "btnFilterDates":
                     cvs.Filter += DateRangeFilter;
+                    SummaryStats();
                     break;
                 case "Refresh":
                     cvs.Filter -= FilterType;
                     cvs.Filter -= DateRangeFilter;
                     cboFilterType.SelectedItem = null;
+                    SummaryStats();
                     break;
             }
         }
@@ -231,22 +236,29 @@ namespace Exercise_Tracker
 
         private void SummaryStats()
         {
-            //TODO - Make INotifyPropertyChanged 
             decimal totDist = 0;
             TimeSpan totTime = new TimeSpan();
+            int count = cvs.View.Cast<Activity>().Count();
+            //int count = allActivities.Count();
 
-            for (var i= 0; i< lvActivities.Items.Count; i++)
+            for (var i= 0; i< count; i++)
             {
-                Activity temp = lvActivities.Items[i] as Activity;
+                Activity temp = cvs.View.Cast<Activity>().ToArray()[i];
                 totDist += temp.Distance;
                 totTime+=TimeSpan.Parse(temp.Duration);
             }
-            decimal avgDist = totDist / lvActivities.Items.Count;
-            TimeSpan avgTime = new TimeSpan(totTime.Ticks/ lvActivities.Items.Count);
+
+            decimal avgDist = totDist / count;
+            TimeSpan avgTime = new TimeSpan(totTime.Ticks/ count);
             txtTotalDist.Text = totDist.ToString("F");
             txtAvgDist.Text = avgDist.ToString("F");
-            txtTotalTime.Text = totTime.ToString(@"hh\:mm\:ss");
+            txtTotalTime.Text = totTime.ToString();
             txtAvgTime.Text = avgTime.ToString(@"hh\:mm\:ss");
+            summaryStats.totDist = totDist.ToString("F");
+            summaryStats.avgDist = avgDist.ToString("F");
+            summaryStats.totTime = totTime.ToString();
+            summaryStats.avgTime = avgTime.ToString(@"hh\:mm\:ss");
+
         }
 
         //TODO - Change combobox to checkcombobox
@@ -264,6 +276,7 @@ namespace Exercise_Tracker
             //cvs.Filter =
             //job => checkedEmployees.Contains((job as JobModel).EmployeeName);
         }
+
     }
     
 }

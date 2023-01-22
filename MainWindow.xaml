@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:Exercise_Tracker"
+        xmlns:model="clr-namespace:Exercise_Tracker.Classes"
         mc:Ignorable="d"
         Title="Feed" Height="450" Width="400">
     <Window.Resources>
         <CollectionViewSource x:Name="cvs" x:Key="cvs" Source="{Binding Activities}"/>
     </Window.Resources>
+
     <Grid>
         <Grid.Resources>
         </Grid.Resources>
@@ -37,18 +39,18 @@
         <Label Content="Average Time:" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.132,-0.115"/>
         <Label Content="Total Distance:" HorizontalAlignment="Left" Margin="203,190,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,-0.077"/>
         <Label Content="Average Distance:" HorizontalAlignment="Left" Margin="203,221,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,-0.077"/>
-        <TextBox x:Name="txtTotalTime" HorizontalAlignment="Left" Height="23" Margin="104,193,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="65"/>
+        <TextBox x:Name="txtTotalTime" HorizontalAlignment="Left" Height="23" Margin="104,193,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="65" DataContext="{Binding ItemsSource, ElementName=lvActivities}" Text="{Binding Path=totTime , UpdateSourceTrigger=PropertyChanged}"/>
         <TextBox x:Name="txtAvgTime" HorizontalAlignment="Left" Height="23" Margin="104,224,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="65"/>
-        <TextBox x:Name="txtTotalDist" HorizontalAlignment="Left" Height="23" Margin="317,193,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="65"/>
+        <TextBox x:Name="txtTotalDist" HorizontalAlignment="Left" Height="23" Margin="317,193,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="65" />
         <TextBox x:Name="txtAvgDist" HorizontalAlignment="Left" Height="23" Margin="317,224,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="65"/>
-        <ComboBox x:Name="cboFilterType" HorizontalAlignment="Left" Margin="300,283,0,0" VerticalAlignment="Top" Width="82" Height="33" >
+        <ComboBox x:Name="cboFilterType" HorizontalAlignment="Left" Margin="300,283,0,0" VerticalAlignment="Top" Width="82" Height="33" DropDownClosed="cboActivityType_DropDownClosed" >
             
-            <ComboBoxItem Content="Select All" IsSelected="True"/>
-            <ComboBoxItem Content="Running" IsSelected="True"/>
-            <ComboBoxItem Content="Walking" IsSelected="True"/>
-            <ComboBoxItem Content="Swimming" IsSelected="True"/>
-            <ComboBoxItem Content="Cycling" IsSelected="True"/>
-            <ComboBoxItem Content="Yoga" IsSelected="True"/>
+            <ComboBoxItem Content="Select All" />
+            <ComboBoxItem Content="Running" />
+            <ComboBoxItem Content="Walking" />
+            <ComboBoxItem Content="Swimming" />
+            <ComboBoxItem Content="Cycling" />
+            <ComboBoxItem Content="Yoga" />
         </ComboBox>
 
     </Grid>

@@ -92,6 +92,7 @@
     <Compile Include="Classes\Activities.cs" />
     <Compile Include="Classes\Activity.cs" />
     <Compile Include="Classes\SqlDAL.cs" />
+    <Compile Include="Classes\SummaryStats.cs" />
     <Compile Include="UpdateActivity.xaml.cs">
       <DependentUpon>UpdateActivity.xaml</DependentUpon>
     </Compile>
