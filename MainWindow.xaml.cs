@@ -28,10 +28,15 @@ namespace Exercise_Tracker
         private DateTime startDate;
         private DateTime endDate;
 
+        private CollectionViewSource cvs = new CollectionViewSource();
+
+
         public MainWindow()
         {
             InitializeComponent();
             SortActivities();
+
+            //SummaryStats();
         }
 
         #region Loading
@@ -39,9 +44,13 @@ namespace Exercise_Tracker
         {
             // sort by date
             List<Activity> sorted = allActivities.OrderByDescending(x => x.ActivityDate).ToList();
-            lvActivities.ItemsSource = sorted;
-
-            //SummaryStats();
+            //lvActivities.ItemsSource = sorted;
+            cvs.Source = sorted;
+            CollectionViewSource.GetDefaultView(sorted).Refresh();
+            Binding b = new Binding();
+            b.Source = cvs;
+            BindingOperations.SetBinding(lvActivities, ListView.ItemsSourceProperty, b);
+            //lvActivities.ItemsSource = (System.Collections.IEnumerable)cvs.Source;
         }
         #endregion
         #region ButtonClicks
@@ -72,10 +81,6 @@ namespace Exercise_Tracker
             createWindow.Show();
         }
 
-        private void btnDeleteActivity_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
         #endregion
 
         #region sorting
@@ -146,25 +151,72 @@ namespace Exercise_Tracker
             dataView.Refresh();
         }
         #endregion
-
+        #region Filtering
         private void btnSearchDates_Click(object sender, RoutedEventArgs e)
         {
             if (dpStartDate.SelectedDate != null && dpEndDate.SelectedDate != null)
             {
-                //TODO - change storedproc method to filter method
-                allActivities = new Activities(startDate, endDate);
-                // sort by date
-                Comparison<Activity> compareDate = new Comparison<Activity>(Activity.CompareDate);
-                allActivities.OrderByDescending(x => x.ActivityDate);
-
-                lvActivities.ItemsSource = allActivities;
-                SummaryStats();
+                UserFilter(sender, e);
             }
             else
             {
                 MessageBox.Show("Please select a date range!", "Dates?", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void cboActivityType_DropDownClosed(object sender, EventArgs e)
+        {
+            UserFilter(sender, e);
+        }
+        private void btnRefreshList_Click(object sender, RoutedEventArgs e)
+        {
+            UserFilter(sender, e);
+            
+        }
+        private void UserFilter(object sender, EventArgs args)
+        {
+            var b = sender as Control;
+            switch (b.Name)
+            {
+                case "cboFilterType":
+                    cvs.Filter += FilterType;
+                    break;
+                case "btnFilterDates":
+                    cvs.Filter += DateRangeFilter;
+                    break;
+                case "Refresh":
+                    cvs.Filter -= FilterType;
+                    cvs.Filter -= DateRangeFilter;
+                    cboFilterType.SelectedItem = null;
+                    break;
+            }
+        }
+        private void FilterType(object sender, FilterEventArgs e)
+        {
+            Activity activity = e.Item as Activity;
+            if (activity.ActivityType.ToString() != cboFilterType.Text.ToString())
+            {
+                e.Accepted = false;
+            }
+            else
+            {
+                //Commented out allows adding multiple filters
+                //e.Accepted = true;
+            }
+        }
+        private void DateRangeFilter(object sender, FilterEventArgs e)
+        {
+            Activity activity = e.Item as Activity;
+            if (activity.ActivityDate < startDate || activity.ActivityDate >= endDate)
+            {
+                e.Accepted = false;
+            }
+            else
+            {
+                //e.Accepted = false;
+            }
+        }
+
+        #endregion
 
         private void dpStartDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -176,27 +228,7 @@ namespace Exercise_Tracker
             endDate = (DateTime)dpEndDate.SelectedDate;
         }
 
-        private void btnRefreshList_Click(object sender, RoutedEventArgs e)
-        {
-            SortActivities();
-            
-        }
 
-        private void cboActivityType_DropDownClosed(object sender, EventArgs e)
-        {
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lvActivities.ItemsSource);
-            view.Filter = UserFilter;
-
-            CollectionViewSource.GetDefaultView(lvActivities.ItemsSource).Refresh();
-
-        }
-        private bool UserFilter(object item)
-        {
-            if (String.IsNullOrEmpty(cboActivityType.Text))
-                return true;
-            else
-                return (item as Activity).ActivityType.IndexOf(cboActivityType.Text, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
         private void SummaryStats()
         {
             //TODO - Make INotifyPropertyChanged 
@@ -216,5 +248,22 @@ namespace Exercise_Tracker
             txtTotalTime.Text = totTime.ToString(@"hh\:mm\:ss");
             txtAvgTime.Text = avgTime.ToString(@"hh\:mm\:ss");
         }
+
+        //TODO - Change combobox to checkcombobox
+        private void CheckBoxSelected(object sender, RoutedEventArgs e)
+        {
+            var checkedTypes = new HashSet<string>();
+            foreach (CheckBox checkBox in cboFilterType.Items)
+            {
+                if (checkBox.IsChecked == true)
+                {
+                    checkedTypes.Add((string)checkBox.Content);
+                }
+            }
+            cvs.Filter += FilterType;
+            //cvs.Filter =
+            //job => checkedEmployees.Contains((job as JobModel).EmployeeName);
+        }
     }
+    
 }
